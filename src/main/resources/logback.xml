@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d %-5p [%c] %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Application Loggers -->
+    <logger name="com.ezen.boot_JPA" level="info" appender-ref="STDOUT" />
+    <logger name="jdbc" level="OFF" />
+    <logger name="jdbc.connection" level="OFF" />
+    <logger name="jdbc.audit" level="OFF" />
+    <logger name="jdbc.sqlonly" level="INFO" appender-ref="STDOUT" />
+    <logger name="jdbc.resultsettable" level="INFO" appender-ref="STDOUT" />
+    <logger name="org.springframework" level="ERROR" />
+    <logger name="org.springframework.jdbc" level="ERROR" />
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>

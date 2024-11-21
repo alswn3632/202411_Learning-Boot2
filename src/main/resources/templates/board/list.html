@@ -8,6 +8,7 @@
     <h3>Board List Page!!</h3>
     <hr>
 
+    <!--/* 리스트 */-->
     <table class="table table-hover">
         <thead>
         <tr>
@@ -28,4 +29,31 @@
         </tr>
         </tbody>
     </table>
+
+    <!--/* 페이지네이션 */-->
+    <!--/* ${ }는 JSP의 EL태그 방식, th:를 붙여서 타임리프에서 사용할 수 있게되는 것 */-->
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <!--/* 이전 */-->
+            <!--/* th:classappend : 동적으로 클래스를 추가할 수 있음 */-->
+            <li class="page-item">
+                <a class="page-link" th:classappend="${pgvo.hasPrev? '' : 'disabled'}" th:href="@{/board/list(pageNo=${pgvo.startPage-2})}" style="color:#6c757d;" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <!--/* 번호 */-->
+            <th:block>
+                <li class="page-item" th:each="i : ${#numbers.sequence(pgvo.startPage, pgvo.endPage)}">
+                    <a class="page-link" th:href="@{/board/list(pageNo=${i-1})}" th:style="${pgvo.pageNo eq i? 'background-color: #6c757d; color:white;' : 'color:#6c757d;'}">[[${i}]]</a>
+                </li>
+            </th:block>
+            <!--/* 다음 */-->
+            <li class="page-item">
+                <a class="page-link" th:classappend="${pgvo.hasNext? '' : 'disabled'}" th:href="@{/board/list(pageNo=${pgvo.endPage})}" style="color:#6c757d;" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
 </div>

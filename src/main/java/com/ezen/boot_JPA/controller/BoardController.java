@@ -1,11 +1,13 @@
 package com.ezen.boot_JPA.controller;
 
 import com.ezen.boot_JPA.dto.BoardDTO;
+import com.ezen.boot_JPA.dto.PagingVO;
 import com.ezen.boot_JPA.entity.Board;
 import com.ezen.boot_JPA.service.BoardService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,10 +39,24 @@ public class BoardController {
         return "/index";
     }
 
+//    @GetMapping("/list")
+//    public String list(Model model){
+//        List<BoardDTO> list = boardService.getList();
+//        model.addAttribute("list", list);
+//
+//        return "/board/list";
+//    }
+
     @GetMapping("/list")
-    public String list(Model model){
-        List<BoardDTO> list = boardService.getList();
+    public String list(Model model, @RequestParam(value = "pageNo",
+            defaultValue = "0", required = false) int pageNo){
+
+        Page<BoardDTO> list = boardService.getList(pageNo);
+
+        PagingVO pgvo = new PagingVO(list);
+        log.info(">>>> pgvo > {}", pgvo);
         model.addAttribute("list", list);
+        model.addAttribute("pgvo", pgvo);
 
         return "/board/list";
     }

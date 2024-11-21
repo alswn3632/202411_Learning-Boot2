@@ -5,6 +5,9 @@ import com.ezen.boot_JPA.entity.Board;
 import com.ezen.boot_JPA.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -26,23 +29,37 @@ public class BoardServiceImpl implements BoardService{
         return boardRepository.save(convertDtoToEntity(boardDTO)).getBno();
     }
 
-    @Override
-    public List<BoardDTO> getList() {
-        // Controller로 보내야하는 return은 BoardDTO 형식
-        // DB에서 가져오는 리스트는 Board 형식
-        // findAll() 메서드 사용
-        // 정렬은 Sort.by(Sort.Direction.DESC, "정렬기준 칼럼명")
-        List<Board> boardList = boardRepository.findAll(Sort.by(Sort.Direction.DESC, "bno"));
-
-//        List<BoardDTO> boardDTOList = new ArrayList<>();
+//    @Override
+//    public List<BoardDTO> getList() {
+//        // Controller로 보내야하는 return은 BoardDTO 형식
+//        // DB에서 가져오는 리스트는 Board 형식
+//        // findAll() 메서드 사용
+//        // 정렬은 Sort.by(Sort.Direction.DESC, "정렬기준 칼럼명")
+//        List<Board> boardList = boardRepository
+//                .findAll(Sort.by(Sort.Direction.DESC, "bno"));
 //
-//        for(Board board : boardList){
-//            boardDTOList.add(convertEntityToDto(board));
-//        }
+////        List<BoardDTO> boardDTOList = new ArrayList<>();
+////
+////        for(Board board : boardList){
+////            boardDTOList.add(convertEntityToDto(board));
+////        }
+//
+//        List<BoardDTO> boardDTOList = boardList
+//                .stream()
+//                .map(b -> convertEntityToDto(b))
+//                .toList();
+//
+//        return boardDTOList;
+//    }
 
-        List<BoardDTO> boardDTOList = boardList.stream().map(b -> convertEntityToDto(b)).toList();
-
-        return boardDTOList;
+    @Override
+    public Page<BoardDTO> getList(int pageNo) {
+        // pakeNo = 0부터 시작
+        // 0은 limit 0,10 할 때의 0을 의미함 (따라서 1일수없지!)
+        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by("bno").descending());
+        Page<Board> list = boardRepository.findAll(pageable);
+        Page<BoardDTO> dtoList = list.map(b -> convertEntityToDto(b));
+        return dtoList;
     }
 
     @Override

@@ -1,0 +1,12 @@
+
+.cmtBox{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+
+    align-items: center;
+}
+
+.cmtBox > p{
+    margin-bottom: 0;
+}

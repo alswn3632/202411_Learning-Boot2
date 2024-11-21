@@ -5,6 +5,10 @@ document.getElementById('listBtn').addEventListener('click', ()=>{
     location.href = "/board/list";
 });
 
+document.getElementById('delBtn').addEventListener('click', ()=>{
+    location.href = "/board/delete?bno=" + bnoVal;
+});
+
 document.getElementById('modBtn').addEventListener('click', ()=>{
     document.getElementById('title').readOnly = false;
     document.getElementById('content').readOnly = false;

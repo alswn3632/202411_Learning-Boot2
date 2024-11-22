@@ -6,7 +6,7 @@
 <head>
     <link rel="stylesheet" th:href="@{/css/boardDetail.css}">
 </head>
-<div layout:fragment="content" class="container-md">
+<div layout:fragment="content" class="container-md" th:with="boardDTO=${boardFileDTO.boardDTO}">
     <h3 id="h3">Board Detail Page!!</h3>
     <hr>
     <!--/* 상세페이지, 수정 */-->
@@ -26,8 +26,40 @@
         </div>
         <div class="mb-3" >
             <label for="content" class="form-label">Content</label>
-            <textarea class="form-control" name="content" id="content" cols="10" rows="3" readonly>[[${boardDTO.writer}]]</textarea>
+
+            <!--/* 첨부파일 출력 라인 */-->
+            <div class="midImg" style="display:flex;">
+                <div th:each="fvo:${boardFileDTO.fileDTOList}" style="display: flex; flex-direction: column; align-items: center;">
+                    <th:block th:if="${fvo.fileType>0}">
+                        <img th:src="@{|/upload/${fvo.saveDir }/${fvo.uuid}_${fvo.fileName}|}" class="rounded" style="margin-right: 5px; width: 200px; height: 200px; object-fit: cover;">
+                        <button type="button" class="btn btn-outline-secondary btn-sm file-x" th:data-uuid="${fvo.uuid}" style="width: 50px; margin-top: 5px;" disabled="disabled">삭제</button>
+                    </th:block>
+                </div>
+            </div>
+
+            <div>
+                <div th:each="fvo:${boardFileDTO.fileDTOList}">
+                    <ul th:unless="${fvo.fileType>0}" class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            💾 [[${fvo.fileName}]]
+                            <a th:href="@{|/upload/${fvo.saveDir }/${fvo.uuid}_${fvo.fileName}|}" th:download="${fvo.fileName}"><button type="button" class="btn btn-outline-secondary btn-sm" style="width: 50px;">받기</button></a>
+                            <button type="button" class="btn btn-outline-secondary btn-sm file-x" th:data-uuid="${fvo.uuid}" style="width: 50px;" disabled="disabled">삭제</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <textarea class="form-control" name="content" id="content" style="margin-top : 5px;" cols="10" rows="3" readonly>[[${boardDTO.content}]]</textarea>
         </div>
+
+        <!-- 첨부파일 입력 라인 추가 -->
+        <div class="mb-3">
+            <input type="file" class="form-control" name="files" id="file" multiple="multiple" style="display:none">
+            <label class="input-group-text" for="file" style="display:none"></label>
+            <button type="button" class="btn btn-secondary file-up" id="trigger" disabled="disabled">첨부파일</button>
+        </div>
+        <!-- 추가한 첨부파일 표시 라인 추가 -->
+        <div class="mb-3" id="fileZone"></div>
 
         <!--/* Detail 페이지에서 보여질 버튼들! */-->
         <button type="button" id="listBtn" class="btn btn-secondary btn-sm">목록</button>
@@ -73,8 +105,9 @@
     </div>
 
     <script th:inline="javascript">
-        let bnoVal = [[${boardDTO.bno}]]
+        let bnoVal = [[${boardFileDTO.boardDTO.bno}]]
     </script>
+    <script th:src="@{/js/boardRegister.js}"></script>
     <script th:src="@{/js/boardDetail.js}"></script>
     <script th:src="@{/js/boardComment.js}"></script>
     <script th:inline="javascript">

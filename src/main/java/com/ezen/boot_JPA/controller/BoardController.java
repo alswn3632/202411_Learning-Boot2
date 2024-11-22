@@ -1,19 +1,19 @@
 package com.ezen.boot_JPA.controller;
 
 import com.ezen.boot_JPA.dto.BoardDTO;
+import com.ezen.boot_JPA.dto.BoardFileDTO;
+import com.ezen.boot_JPA.dto.FileDTO;
 import com.ezen.boot_JPA.dto.PagingVO;
-import com.ezen.boot_JPA.entity.Board;
+import com.ezen.boot_JPA.handler.FileHandler;
+import com.ezen.boot_JPA.handler.FileRemoveHandler;
 import com.ezen.boot_JPA.service.BoardService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -24,18 +24,32 @@ import java.util.List;
 @Controller
 public class BoardController {
     private final BoardService boardService;
+    private final FileHandler fileHandler;
 
     @GetMapping("/register")
     public void register(){}
 
-    @PostMapping("/register")
-    public String register(BoardDTO boardDTO){
-        log.info(">>>> boardDTO > {}", boardDTO);
-        // 일반적으로 insert, update, delete => return 1 row
-        // jpa에서는 insert, update, delete => return id
-        Long bno = boardService.insert(boardDTO);
-        log.info(">>>> insert > {}", (bno>0? "성공" : "실패"));
+//    @PostMapping("/register")
+//    public String register(BoardDTO boardDTO){
+//        log.info(">>>> boardDTO > {}", boardDTO);
+//        // 일반적으로 insert, update, delete => return 1 row
+//        // jpa에서는 insert, update, delete => return id
+//        Long bno = boardService.insert(boardDTO);
+//        log.info(">>>> insert > {}", (bno>0? "성공" : "실패"));
+//
+//        return "/index";
+//    }
 
+    @PostMapping("/register")
+    public String register(BoardDTO boardDTO, @RequestParam(name="files",required = false) MultipartFile[] files){
+        log.info(">>>> boardDTO > {}", boardDTO);
+        List<FileDTO> flist = null;
+        if(files != null && files[0].getSize()>0){
+            // 파일 핸들러 작업 1. 실제 저장소에 저장 2. 파일 데이터가 담긴 flist 리턴
+            flist = fileHandler.uploadfiles(files);
+            log.info(">>>> flist > {}", flist);
+        }
+        Long bno = boardService.insert(new BoardFileDTO(boardDTO, flist));
         return "/index";
     }
 
@@ -62,17 +76,24 @@ public class BoardController {
     }
 
     @GetMapping("/detail")
-    public String detail(Model model,@RequestParam("bno") Long bno){
-        BoardDTO boardDTO = boardService.getDetail(bno);
-        model.addAttribute("boardDTO", boardDTO);
+    public String detail(Model model, @RequestParam("bno") Long bno){
+        BoardFileDTO boardFileDTO = boardService.getDetail(bno);
+        log.info(">>>> boardFileDTO > {}", boardFileDTO);
+        model.addAttribute("boardFileDTO", boardFileDTO);
 
         return "/board/detail";
     }
 
     @PostMapping("/modify")
-    public String modify(BoardDTO boardDTO, RedirectAttributes redirectAttributes){
-        Long bno = boardService.modify(boardDTO);
-        redirectAttributes.addAttribute("bno", boardDTO.getBno());
+    public String modify(BoardDTO boardDTO, @RequestParam(name="files",required = false) MultipartFile[] files, RedirectAttributes redirectAttributes){
+        List<FileDTO> flist = null;
+        if(files != null && files[0].getSize()>0){
+            flist = fileHandler.uploadfiles(files);
+            log.info(">>>> flist > {}", flist);
+        }
+
+        Long bno = boardService.modify(new BoardFileDTO(boardDTO, flist));
+        redirectAttributes.addAttribute("bno", bno);
         return "redirect:/board/detail";
     }
 
@@ -81,6 +102,20 @@ public class BoardController {
         log.info(">>>> bno > {}", bno);
         boardService.delete(bno);
         return "redirect:/board/list";
+    }
+
+    @ResponseBody
+    @DeleteMapping(value="/file/{uuid}")
+    public String fileDelete(@PathVariable("uuid") String uuid) {
+        FileRemoveHandler fileRemoveHandler = new FileRemoveHandler();
+
+        FileDTO fileDTO = boardService.getFile(uuid);
+        int isOk = fileRemoveHandler.deleteFile(fileDTO);
+        if(isOk>0){
+            isOk = boardService.deleteFile(uuid);
+        }
+
+        return isOk>0? "1" : "0";
     }
 
 }

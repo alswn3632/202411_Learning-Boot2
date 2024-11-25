@@ -2,6 +2,7 @@
 <html lang="en"
     xmlns:th="http://thymeleaf.org"
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
     layout:decorate="~{layout/layout}">
 <head>
     <link rel="stylesheet" th:href="@{/css/boardDetail.css}">
@@ -72,7 +73,7 @@
 
     <!--/* 댓글 입력 */-->
     <div class="input-group mb-3">
-        <span class="input-group-text" id="cmtWriter">tester</span>
+        <span class="input-group-text" id="cmtWriter" th:text="${#authentication.name != 'anonymousUser' ? #authentication.name : '익명'}"></span>
         <input type="text" class="form-control" id="cmtText" placeholder="Add Comment...">
         <button class="btn btn-outline-secondary" id="cmtAddBtn" type="button">등록</button>
     </div>

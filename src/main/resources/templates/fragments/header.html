@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"
-    xmlns:th="http://www.thymeleaf.org">
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <div th:fragment="header">
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -10,11 +11,26 @@
                     <li class="nav-item">
                         <a th:href="@{/}" class="nav-link active" aria-current="page">Home</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
                         <a th:href="@{/board/register}" class="nav-link">글쓰기</a>
                     </li>
                     <li class="nav-item">
                         <a th:href="@{/board/list}" class="nav-link">목록</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAnonymous()">
+                        <a th:href="@{/user/join}" class="nav-link">회원가입</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAnonymous()">
+                        <a th:href="@{/user/login}" class="nav-link">로그인</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <a th:href="@{/user/logout}" class="nav-link">로그아웃</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+                        <a th:href="@{/user/list}" class="nav-link">유저목록</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <a th:href="@{/user/modify}" class="nav-link">([[${#authentication.name}]])내정보</a>
                     </li>
                 </ul>
             </div>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en"
+    xmlns:th="http://thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+    layout:decorate="~{layout/layout}">
+
+<div layout:fragment="content" class="container-md">
+    <h3>User List Page!!</h3>
+    <hr>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Email</th>
+            <th>Nickname</th>
+            <th>RegDate</th>
+            <th>LogDate</th>
+            <th>Auth</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="userDTO:${list}">
+            <td>[[${userDTO.email }]]</td>
+            <td>[[${userDTO.nickName }]]</td>
+            <td>[[${userDTO.regAt }]]</td>
+            <td>[[${userDTO.lastLogin }]]</td>
+            <td>
+                <span class="badge text-bg-secondary" th:each="auth:${userDTO.authList}" style="margin-right:2px;">[[${auth.auth}]]</span>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>

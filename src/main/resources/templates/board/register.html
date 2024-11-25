@@ -2,6 +2,7 @@
 <html lang="en"
     xmlns:th="http://thymeleaf.org"
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
     layout:decorate="~{layout/layout}">
 
 <div layout:fragment="content" class="container-md">
@@ -15,7 +16,7 @@
         </div>
         <div class="mb-3">
             <label for="w" class="form-label">writer</label>
-            <input type="text" class="form-control" name="writer" id="w" placeholder="writer..">
+            <input type="text" class="form-control" name="writer" id="w" th:value="${#authentication.getPrincipal().userDTO.email}" readonly>
         </div>
         <div class="mb-3">
             <label for="c" class="form-label">content</label>

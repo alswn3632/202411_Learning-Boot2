@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en"
+    xmlns:th="http://thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+    layout:decorate="~{layout/layout}">
+
+<div layout:fragment="content" class="container-md">
+    <h3>User Modify Page!!</h3>
+    <hr>
+    <form action="/user/modify" method="post" th:with="auth=${#authentication.getPrincipal().userDTO}">
+        <div class="mb-3">
+            <label for="e" class="form-label">email</label>
+            <input type="text" class="form-control" name="email" id="e" th:value="${auth.email}" readonly>
+        </div>
+        <div class="mb-3">
+            <label for="p" class="form-label">pwd</label>
+            <input type="text" class="form-control" name="pwd" id="p" placeholder="password...">
+        </div>
+        <div class="mb-3">
+            <label for="n" class="form-label">nickName</label>
+            <input type="text" class="form-control" name="nickName" id="n" placeholder="nickName...">
+        </div>
+        <button type="submit" class="btn btn-primary">가입</button>
+    </form>
+</div>

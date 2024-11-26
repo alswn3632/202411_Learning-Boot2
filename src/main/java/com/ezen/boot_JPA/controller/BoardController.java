@@ -62,13 +62,17 @@ public class BoardController {
 //    }
 
     @GetMapping("/list")
-    public String list(Model model, @RequestParam(value = "pageNo",
-            defaultValue = "0", required = false) int pageNo){
+    public String list(Model model,
+                       @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+                       @RequestParam(value = "type", required = false) String type,
+                       @RequestParam(value = "keyword", required = false) String keyword){
 
-        Page<BoardDTO> list = boardService.getList(pageNo);
+        Page<BoardDTO> list = boardService.getList(pageNo, type, keyword);
 
-        PagingVO pgvo = new PagingVO(list);
+        PagingVO pgvo = new PagingVO(list, type, keyword);
+        log.info(">>>> list > {}", list);
         log.info(">>>> pgvo > {}", pgvo);
+
         model.addAttribute("list", list);
         model.addAttribute("pgvo", pgvo);
 

@@ -16,6 +16,7 @@
             <th>RegDate</th>
             <th>LogDate</th>
             <th>Auth</th>
+            <th>delete</th>
         </tr>
         </thead>
         <tbody>
@@ -27,6 +28,7 @@
             <td>
                 <span class="badge text-bg-secondary" th:each="auth:${userDTO.authList}" style="margin-right:2px;">[[${auth.auth}]]</span>
             </td>
+            <td><a th:href="@{/user/delete(email=${userDTO.email })}">삭제</a></td>
         </tr>
 
         </tbody>

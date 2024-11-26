@@ -8,6 +8,30 @@
     <h3>Board List Page!!</h3>
     <hr>
 
+    <!--/* 검색 */-->
+    <div class="container-md" style="display: flex; justify-content: flex-end;">
+        <form action="/board/list" method="get" class="d-flex" role="search">
+            <select class="form-select" name="type" id="inputGroupSelect01" style="width:150px;">
+                <option value="twc" th:selected="${pgvo.type == 'twc'? true : false }">전체</option>
+                <option value="t" th:selected="${pgvo.type == 't'? true : false }">제목</option>
+                <option value="w" th:selected="${pgvo.type == 'w'? true : false }">작성자</option>
+                <option value="c" th:selected="${pgvo.type == 'c'? true : false }">내용</option>
+                <option value="tw" th:selected="${pgvo.type == 'tw'? true : false }">제목+작성자</option>
+                <option value="wc" th:selected="${pgvo.type == 'wc'? true : false }">작성자+내용</option>
+                <option value="tc" th:selected="${pgvo.type == 'tc'? true : false }">제목+내용</option>
+            </select>
+            <input class="form-control me-2" type="search" name="keyword" th:value="${pgvo.keyword}" placeholder="Search" aria-label="Search" style="margin-left:8px;">
+            <input type="hidden" name="pageNo" th:value="0">
+            <button type="submit" class="btn btn-secondary position-relative">
+                Search
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    [[${list.totalElements}]]
+                    <span class="visually-hidden">unread messages</span>
+                </span>
+            </button>
+        </form>
+    </div>
+
     <!--/* 리스트 */-->
     <table class="table table-hover">
         <thead>
@@ -37,19 +61,19 @@
             <!--/* 이전 */-->
             <!--/* th:classappend : 동적으로 클래스를 추가할 수 있음 */-->
             <li class="page-item">
-                <a class="page-link" th:classappend="${pgvo.hasPrev? '' : 'disabled'}" th:href="@{/board/list(pageNo=${pgvo.startPage-2})}" style="color:#6c757d;" aria-label="Previous">
+                <a class="page-link" th:classappend="${pgvo.hasPrev? '' : 'disabled'}" th:href="@{/board/list(pageNo=${pgvo.startPage-2}, type=${pgvo.type}, keyword=${pgvo.keyword})}" style="color:#6c757d;" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
             <!--/* 번호 */-->
             <th:block>
                 <li class="page-item" th:each="i : ${#numbers.sequence(pgvo.startPage, pgvo.endPage)}">
-                    <a class="page-link" th:href="@{/board/list(pageNo=${i-1})}" th:style="${pgvo.pageNo eq i? 'background-color: #6c757d; color:white;' : 'color:#6c757d;'}">[[${i}]]</a>
+                    <a class="page-link" th:href="@{/board/list(pageNo=${i-1}, type=${pgvo.type}, keyword=${pgvo.keyword})}" th:style="${pgvo.pageNo eq i? 'background-color: #6c757d; color:white;' : 'color:#6c757d;'}">[[${i}]]</a>
                 </li>
             </th:block>
             <!--/* 다음 */-->
             <li class="page-item">
-                <a class="page-link" th:classappend="${pgvo.hasNext? '' : 'disabled'}" th:href="@{/board/list(pageNo=${pgvo.endPage})}" style="color:#6c757d;" aria-label="Next">
+                <a class="page-link" th:classappend="${pgvo.hasNext? '' : 'disabled'}" th:href="@{/board/list(pageNo=${pgvo.endPage}, type=${pgvo.type}, keyword=${pgvo.keyword})}" style="color:#6c757d;" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>

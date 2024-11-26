@@ -7,10 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -68,4 +65,14 @@ public class UserController {
         return "redirect:/user/logout";
 
     }
+
+    @ResponseBody
+    @GetMapping("/delete")
+    public String delete(@RequestParam("email") String email){
+        int isOk = userService.delete(email);
+        log.info(">>>> user delete > {}", (isOk>0? "성공" : "실패"));
+        return isOk>0? "성공" : "실패";
+    }
+
+
 }

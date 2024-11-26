@@ -75,4 +75,6 @@ public interface UserService {
     int update(UserDTO userDTO);
 
     int updateHasPwd(UserDTO userDTO);
+
+    int delete(String email);
 }
